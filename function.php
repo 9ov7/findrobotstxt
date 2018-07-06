@@ -123,6 +123,7 @@ function checkSitemap($array)
 
 
 
+
 function workFile($fileUrl)
 {
 	$array = file($fileUrl); // берем файл и загоняем в массив
@@ -136,13 +137,14 @@ function workFile($fileUrl)
 	echo "<br/>";
 	echo "<br/>Код ответа на запрос файла ->>".get_http_response_code_on_query_file($fileUrl)."<br/>";
 	echo "<br/>";
-	
+	$str = preg_replace('/[^a-zA-Zа-яА-Я0-9]/ui', '',$fileUrl); 
     echo    "<br/><br/>
             <form method='POST' action='/saveRes.php'>
             <input type='hidden' name='host' value=".checkHost($array).">
             <input type='hidden' name='sitemap' value=".checkSitemap($array).">
             <input type='hidden' name='filesize' value=".finalFileSize(getRemoteFileSize($fileUrl)).">
             <input type='hidden' name='httpcode' value=".get_http_response_code_on_query_file($fileUrl).">
+            <input type='hidden' name='urlsite' value=".$str.">
             <input type='submit' name='button' value='Save result'>
             </form>
             <br/><br/>";

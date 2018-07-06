@@ -49,7 +49,7 @@ if($_POST['siteName']) // если форма не пустая
         	echo "<br/>STATUS = 1<br/>";
         	echo "<br/>URL:$url<br/>";
         	workFile($fileurl,$url);
-
+        	
 
 
         	
@@ -70,22 +70,6 @@ if($_POST['siteName']) // если форма не пустая
 
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </body>

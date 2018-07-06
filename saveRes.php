@@ -1,10 +1,18 @@
-<?php
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Result excel</title>
+  <meta charset="utf-8">
+</head>
+<body>
 
+<?php
 
 echo $_POST['host']."<br/>";
 echo $_POST['sitemap']."<br/>";
 echo $_POST['filesize']."<br/>";
 echo $_POST['httpcode']."<br/>";
+echo $_POST['urlsite']."<br/>";
 
 
 require_once 'PHPExcel.php'; // Подключаем библиотеку PHPExcel
@@ -48,9 +56,9 @@ require_once 'PHPExcel.php'; // Подключаем библиотеку PHPExc
   // Состояние и рекомендации
   for($i = 3; $i < 15; $i++)
   {
-  	$page->setCellValue("D".$i."","Состояние");
-  	$i++;
-  	$page->setCellValue("D".$i."","Рекомендации");
+    $page->setCellValue("D".$i."","Состояние");
+    $i++;
+    $page->setCellValue("D".$i."","Рекомендации");
   }
  
 
@@ -61,67 +69,67 @@ require_once 'PHPExcel.php'; // Подключаем библиотеку PHPExc
   // 2 check
   if($_POST['host']) 
   {
-  	$page->setCellValue("C5","OK");
+    $page->setCellValue("C5","OK");
     $page->setCellValue("E5","Директива Host указана!");
     $page->setCellValue("E6","Доработки не требуются");
   }
   else if(!$_POST['host'])
   {
-  	$page->setCellValue("C5","Oшибка");
+    $page->setCellValue("C5","Oшибка");
     $page->setCellValue("E5","В файле robots.txt не указана директива Host");
     $page->setCellValue("E6","Программист: Для того, чтобы поисковые системы знали, какая версия сайта является основных зеркалом, необходимо прописать адрес основного зеркала в директиве Host. В данный момент это не прописано. Необходимо добавить в файл robots.txt директиву Host. Директива Host задётся в файле 1 раз, после всех правил.");
   }
   // 3 check
   if($_POST['host'] == 1) 
   {
-  	$page->setCellValue("C7","OK");
+    $page->setCellValue("C7","OK");
     $page->setCellValue("E7","В файле прописана 1 директива Host");
     $page->setCellValue("E8","Доработки не требуются");
   }
   else if($_POST['host'] > 1)
   {
-  	$page->setCellValue("C7","Oшибка");
+    $page->setCellValue("C7","Oшибка");
     $page->setCellValue("E7","В файле прописано несколько директив Host");
     $page->setCellValue("E8","Программист: Директива Host должна быть указана в файле толоко 1 раз. Необходимо удалить все дополнительные директивы Host и оставить только 1, корректную и соответствующую основному зеркалу сайта");
   }
   // 4 check
   if($_POST['filesize'] > 0 && $_POST['filesize'] < 32000) // ~~32Kb 
   {
-  	$size = $_POST['filesize']/1024;
-  	$page->setCellValue("C9","OK");
+    $size = $_POST['filesize']/1024;
+    $page->setCellValue("C9","OK");
     $page->setCellValue("E9","Размер файла robots.txt составляет ".$size."Кб, что находится в пределах допустимой нормы");
     $page->setCellValue("E10","Доработки не требуются");
   }
   else if($_POST['filesize'] > 32000)
   {
-  	$size = $_POST['filesize']/1024;
-  	$page->setCellValue("C9","Oшибка");
+    $size = $_POST['filesize']/1024;
+    $page->setCellValue("C9","Oшибка");
     $page->setCellValue("E9","Размера файла robots.txt составляет ".$size.", что превышает допустимую норму");
     $page->setCellValue("E10","Программист: Максимально допустимый размер файла robots.txt составляем 32 кб. Необходимо отредактировть файл robots.txt таким образом, чтобы его размер не превышал 32 Кб");
   }
   // 5 check
   if($_POST['sitemap']) 
   {
-  	$page->setCellValue("C11","OK");
+    $page->setCellValue("C11","OK");
     $page->setCellValue("E11","Директива Sitemap указана");
     $page->setCellValue("E12","Доработки не требуются");
   }
   else if($_POST['sitemap'] <= 0)
   {
-  	$page->setCellValue("C11","Oшибка");
+    $page->setCellValue("C11","Oшибка");
     $page->setCellValue("E11","В файле robots.txt не указана директива Sitemap");
     $page->setCellValue("E12","Программист: Добавить в файл robots.txt директиву Sitemap");
   }
   // 6 check
   if($_POST['httpcode'] == 200) 
   {
-  	$page->setCellValue("C13","OK");
+    $page->setCellValue("C13","OK");
     $page->setCellValue("E13","Файл robots.txt отдаёт код ответа сервера 200");
     $page->setCellValue("E14","Доработки не требуются");
   }
   else if(!$_POST['httpcode'] != 200)
   {
-  	$page->setCellValue("C13","Oшибка");
+    $page->setCellValue("C13","Oшибка");
     $page->setCellValue("E13","При обращении к файлу robots.txt сервер возвращает код ответа ".$_POST['httpcode']."");
     $page->setCellValue("E14","Программист: Файл robots.txt должны отдавать код ответа 200, иначе файл не будет обрабатываться. Необходимо настроить сайт таким образом, чтобы при обращении к файлу robots.txt сервер возвращает код ответа 200");
   }
@@ -132,6 +140,22 @@ require_once 'PHPExcel.php'; // Подключаем библиотеку PHPExc
   /* Начинаем готовиться к записи информации в xlsx-файл */
   $objWriter = PHPExcel_IOFactory::createWriter($phpexcel, 'Excel2007');
   /* Записываем в файл */
-  $objWriter->save("example.xlsx");
+
+  $objWriter->save($_POST['urlsite'].".xlsx");
+  echo '<a href="'.$_POST['urlsite'].'.xlsx" download="'.$_POST['urlsite'].'.xlsx" title="save me ">скачать файл</a>';
 
 ?>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
